@@ -266,7 +266,6 @@ export default function Chat() {
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              capture="environment"
               onChange={onFileInputChange}
               className="hidden"
             />

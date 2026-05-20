@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -5,10 +7,17 @@ from app.config import settings
 from app.utils.storage import StorageManager
 from app.routers import user, girls, chat
 
+# 读取根目录 VERSION 文件
+BASE_DIR = Path(__file__).parent.parent
+VERSION = "0.1.0"
+version_file = BASE_DIR.parent / "VERSION"
+if version_file.exists():
+    VERSION = version_file.read_text(encoding="utf-8").strip()
+
 app = FastAPI(
     title=settings.APP_NAME,
     description="AiChat Agent - 用AI辅助回复女生消息",
-    version="0.1.0",
+    version=VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -40,6 +49,12 @@ async def startup_event():
 async def health_check():
     """健康检查"""
     return {"status": "ok", "app": settings.APP_NAME}
+
+
+@app.get("/api/version")
+async def get_version():
+    """获取当前版本号"""
+    return {"version": VERSION, "app": settings.APP_NAME}
 
 
 if __name__ == "__main__":

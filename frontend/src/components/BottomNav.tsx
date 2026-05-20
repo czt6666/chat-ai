@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 
+declare const __APP_VERSION__: string
+
 export default function BottomNav() {
   const location = useLocation()
   const pathname = location.pathname
@@ -12,7 +14,7 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-      <div className="max-w-md mx-auto flex justify-around items-center h-14">
+      <div className="max-w-md mx-auto flex justify-around items-center h-14 relative">
         <Link
           to="/"
           className={`flex flex-col items-center justify-center flex-1 h-full ${
@@ -36,6 +38,10 @@ export default function BottomNav() {
           </svg>
           <span className="text-xs mt-0.5">我的</span>
         </Link>
+
+        <span className="absolute right-2 bottom-1 text-[10px] text-gray-300">
+          v{__APP_VERSION__}
+        </span>
       </div>
     </nav>
   )
