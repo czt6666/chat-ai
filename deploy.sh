@@ -19,53 +19,31 @@ ssh "${SERVER}" "mkdir -p ${REMOTE_DIR}"
 echo "  同步后端..."
 tar czf /tmp/aichat_backend.tar.gz backend/
 scp /tmp/aichat_backend.tar.gz "${SERVER}:${REMOTE_DIR}/"
-ssh "${SERVER}" "cd ${REMOTE_DIR} && rm -rf backend && tar xzf aichat_backend.tar.gz && rm -f aichat_backend.tar.gz"
+ssh "${SERVER}" "cd ${REMOTE_DIR} && tar xzf aichat_backend.tar.gz && rm -f aichat_backend.tar.gz"
 
 echo "  同步前端..."
 tar czf /tmp/aichat_frontend.tar.gz -C frontend/dist .
 scp /tmp/aichat_frontend.tar.gz "${SERVER}:${REMOTE_DIR}/"
-ssh "${SERVER}" "cd ${REMOTE_DIR} && rm -rf frontend && mkdir -p frontend && tar xzf aichat_frontend.tar.gz -C frontend && rm -f aichat_frontend.tar.gz"
+ssh "${SERVER}" "cd ${REMOTE_DIR} && mkdir -p frontend && tar xzf aichat_frontend.tar.gz -C frontend && rm -f aichat_frontend.tar.gz"
 
-echo "=== 3. 远程安装依赖并启动服务 ==="
+echo "  同步数据..."
+tar czf /tmp/aichat_data.tar.gz data/
+scp /tmp/aichat_data.tar.gz "${SERVER}:${REMOTE_DIR}/"
+ssh "${SERVER}" "cd ${REMOTE_DIR} && tar xzf aichat_data.tar.gz && rm -f aichat_data.tar.gz"
+
+echo "=== 3. 远程安装依赖 ==="
 ssh "${SERVER}" bash -s << REMOTE_EOF
 set -e
 REMOTE_DIR="${REMOTE_DIR}"
-SERVICE_NAME="${SERVICE_NAME}"
 
 echo "=== 安装 Python 依赖 ==="
 cd "\${REMOTE_DIR}/backend"
 python3.9 -m pip install --upgrade pip -i https://pypi.org/simple
 python3.9 -m pip install -r requirements.txt -i https://pypi.org/simple
 
-echo "=== 创建/更新 systemd 服务 ==="
-cat > /etc/systemd/system/\${SERVICE_NAME}.service << EOF
-[Unit]
-Description=AiChat Backend
-After=network.target
-
-[Service]
-Type=simple
-User=root
-WorkingDirectory=\${REMOTE_DIR}/backend
-Environment="PATH=/usr/local/bin:/usr/bin:/bin"
-Environment="APP_ENV=production"
-ExecStart=/usr/bin/python3.9 -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-Restart=always
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-systemctl daemon-reload
-systemctl enable \${SERVICE_NAME}
-systemctl restart \${SERVICE_NAME}
-
 echo ""
 echo "=== 部署完成 ==="
-echo "服务状态:"
-systemctl status \${SERVICE_NAME} --no-pager
+echo "请手动启动后端服务："
+echo "  cd \${REMOTE_DIR}/backend && python3.9 -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
 REMOTE_EOF
 
