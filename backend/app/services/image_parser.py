@@ -7,8 +7,8 @@ from app.services.knowledge_base import knowledge_base
 from app.models.chat import ParsedScreenshot, ChatMessage
 
 
-# 截图解析 System Prompt
-_PARSE_SYSTEM_PROMPT = """你是一个图片文字提取专家。需要从聊天截图中准确提取对话内容，并严格区分对话双方。
+# 截图解析 Prompt
+_PARSE_USER_PROMPT = """你是一个图片文字提取专家。需要从聊天截图中准确提取对话内容，并严格区分对话双方。
 
 【角色识别 - 这是最重要的规则，必须严格遵守】
 1. 聊天界面中，消息气泡分布在屏幕左右两侧，代表两个不同的人
@@ -45,18 +45,21 @@ text_note 是用户手动输入的备注（比如"她前面还发了一个表情
 注意：只输出 JSON，不要任何解释"""
 
 
-async def parse_screenshot(image_path: str, text_note: Optional[str] = "") -> Tuple[ParsedScreenshot, dict]:
+async def parse_screenshot(
+    image_path: str, text_note: Optional[str] = ""
+) -> Tuple[ParsedScreenshot, dict]:
     """解析聊天截图，严格区分'她'和'我'的消息
     返回: (解析结果, 调试信息)
     """
 
-    user_prompt = "请提取这张聊天截图中的所有对话文字，并严格按照上述 JSON Schema 输出结果，不要添加任何解释文字。"
-    if text_note:
-        user_prompt += f"\n额外备注：{text_note}"
-
-    # 动态注入场景列表
+    # 动态注入场景列表，把所有指令放到 user prompt 中
     scene_list = knowledge_base.get_scene_summary_for_parser()
-    system_prompt = _PARSE_SYSTEM_PROMPT.replace("{scene_list}", scene_list)
+    user_prompt = _PARSE_USER_PROMPT.replace("{scene_list}", scene_list)
+    if text_note:
+        user_prompt += f"\n\n额外备注：{text_note}"
+
+    # system prompt 什么都不要写
+    system_prompt = ""
 
     raw_text = ""
     try:
@@ -120,7 +123,7 @@ def _extract_json(text: str) -> Optional[str]:
     start = text.find("{")
     end = text.rfind("}")
     if start != -1 and end != -1 and end > start:
-        return text[start:end+1]
+        return text[start : end + 1]
 
     return None
 
@@ -134,9 +137,13 @@ def _smart_fallback(raw_text: str) -> ParsedScreenshot:
         if not line:
             continue
         # 简单启发式：包含"她说"、"她:" 的认为是她的消息
-        if any(k in line for k in ["她说", "对方说", "她：", "她:", "her:", "her_messages"]):
+        if any(
+            k in line for k in ["她说", "对方说", "她：", "她:", "her:", "her_messages"]
+        ):
             messages.append(ChatMessage(role="her", content=line))
-        elif any(k in line for k in ["我说", "自己", "我：", "我:", "my:", "my_messages"]):
+        elif any(
+            k in line for k in ["我说", "自己", "我：", "我:", "my:", "my_messages"]
+        ):
             messages.append(ChatMessage(role="me", content=line))
 
     if not messages:

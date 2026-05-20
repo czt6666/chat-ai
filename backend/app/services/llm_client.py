@@ -41,20 +41,21 @@ class LLMClient:
         ext = image_path.split(".")[-1].lower()
         mime = "image/png" if ext == "png" else "image/jpeg"
 
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": user_text},
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:{mime};base64,{b64_image}"
-                        },
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({
+            "role": "user",
+            "content": [
+                {"type": "text", "text": user_text},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{mime};base64,{b64_image}"
                     },
-                ],
-            }
-        ]
+                },
+            ],
+        })
 
         response = await self.openai.chat.completions.create(
             model=model,

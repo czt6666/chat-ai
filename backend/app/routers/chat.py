@@ -109,7 +109,6 @@ async def chat_with_girl(
             "screenshot_path": str(screenshot_path),
             "parsed": parsed.model_dump(),
             "detected_scenes": parsed.detected_scenes,
-            "girl_summary": parsed.girl_summary,
             "emotion_tag": response.emotion_tag,
             "versions": response.versions.model_dump(),
             "recommended": response.recommended,
