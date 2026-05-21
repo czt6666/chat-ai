@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3615/api'
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -30,3 +30,13 @@ export const sendChat = (girlId: string, image: File, textNote: string = '') => 
     headers: { 'Content-Type': 'multipart/form-data' },
   }).then(r => r.data)
 }
+
+// Prompt 调试
+export const debugLLM = (data: {
+  system_prompt: string
+  user_prompt: string
+  provider?: 'anthropic' | 'openai'
+  model?: string
+  temperature?: number
+  max_tokens?: number
+}) => api.post('/debug/llm', data).then(r => r.data)

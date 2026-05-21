@@ -198,7 +198,7 @@ export default function Chat() {
     }
 
     return (
-      <pre className={`rounded-lg p-3 text-xs overflow-x-auto whitespace-pre-wrap max-h-96 overflow-y-auto ${isJson ? 'bg-gray-800 text-green-400' : 'bg-gray-800 text-gray-400'}`}>
+      <pre className={`rounded-lg p-3 text-sm overflow-x-auto whitespace-pre-wrap max-h-[32rem] overflow-y-auto ${isJson ? 'bg-gray-800 text-green-400' : 'bg-gray-800 text-gray-400'}`}>
         {formatted}
       </pre>
     )
@@ -501,7 +501,7 @@ export default function Chat() {
             {reply.debug.system_prompt && (
               <div className="mb-4">
                 <div className="text-gray-500 mb-2">System Prompt：</div>
-                <pre className="bg-gray-800 rounded-lg p-3 text-xs text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">
+                <pre className="bg-gray-800 rounded-lg p-3 text-sm text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-96 overflow-y-auto">
                   {reply.debug.system_prompt}
                 </pre>
               </div>
@@ -511,7 +511,7 @@ export default function Chat() {
             {reply.debug.full_prompt && (
               <div className="mb-4">
                 <div className="text-gray-500 mb-2">发送给LLM的完整Prompt：</div>
-                <pre className="bg-gray-800 rounded-lg p-3 text-xs text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">
+                <pre className="bg-gray-800 rounded-lg p-3 text-sm text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-96 overflow-y-auto">
                   {reply.debug.full_prompt}
                 </pre>
               </div>
@@ -532,7 +532,7 @@ export default function Chat() {
                 {reply.parse_debug.system_prompt && (
                   <div className="mb-3">
                     <div className="text-gray-500 mb-1">识图 System Prompt：</div>
-                    <pre className="bg-gray-800 rounded-lg p-3 text-xs text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-48 overflow-y-auto">
+                    <pre className="bg-gray-800 rounded-lg p-3 text-sm text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-80 overflow-y-auto">
                       {reply.parse_debug.system_prompt}
                     </pre>
                   </div>
@@ -540,7 +540,7 @@ export default function Chat() {
                 {reply.parse_debug.user_prompt && (
                   <div className="mb-3">
                     <div className="text-gray-500 mb-1">识图 User Prompt：</div>
-                    <pre className="bg-gray-800 rounded-lg p-3 text-xs text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-32 overflow-y-auto">
+                    <pre className="bg-gray-800 rounded-lg p-3 text-sm text-gray-400 overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">
                       {reply.parse_debug.user_prompt}
                     </pre>
                   </div>

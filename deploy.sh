@@ -44,6 +44,6 @@ python3.9 -m pip install -r requirements.txt -i https://pypi.org/simple
 echo ""
 echo "=== 部署完成 ==="
 echo "请手动启动后端服务："
-echo "  cd \${REMOTE_DIR}/backend && python3.9 -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
+echo "  cd \${REMOTE_DIR}/backend && python3.9 -m uvicorn app.main:app --host 127.0.0.1 --port 3615"
 REMOTE_EOF
 

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.utils.storage import StorageManager
-from app.routers import user, girls, chat
+from app.routers import user, girls, chat, debug
 
 # 读取根目录 VERSION 文件
 BASE_DIR = Path(__file__).parent.parent
@@ -35,6 +35,7 @@ app.add_middleware(
 app.include_router(user.router)
 app.include_router(girls.router)
 app.include_router(chat.router)
+app.include_router(debug.router)
 
 
 @app.on_event("startup")
@@ -59,4 +60,4 @@ async def get_version():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=3615, reload=True)

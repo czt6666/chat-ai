@@ -28,6 +28,18 @@ export default function BottomNav() {
         </Link>
 
         <Link
+          to="/debug"
+          className={`flex flex-col items-center justify-center flex-1 h-full ${
+            isActive('/debug') ? 'text-blue-600' : 'text-gray-400'
+          }`}
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+          <span className="text-xs mt-0.5">调试</span>
+        </Link>
+
+        <Link
           to="/user"
           className={`flex flex-col items-center justify-center flex-1 h-full ${
             isActive('/user') ? 'text-blue-600' : 'text-gray-400'
